@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>For My Favorite Person ❤️</title>
+    <style>
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        body {
+            margin: 0; padding: 0; min-height: 100vh;
+            background-color: #fff0f3; font-family: 'Arial', sans-serif;
+            overflow: hidden; touch-action: manipulation;
+        }
+
+        /* Essential for buttons to work */
+        .section { 
+            display: none; /* Hidden by default */
+            width: 100vw; height: 100vh; 
+            padding: 20px; text-align: center; 
+            flex-direction: column; align-items: center; justify-content: center;
+            position: absolute; top: 0; left: 0;
+        }
+        .active { display: flex !important; } /* Shows the section */
+
+        /* Home Page */
+        .menu-card {
+            background: white; width: 85%; max-width: 350px;
+            margin: 10px; padding: 20px; border-radius: 20px;
+            box-shadow: 0 5px 15px rgba(255, 77, 109, 0.2);
+            cursor: pointer; border: 2px solid transparent;
+        }
+        .menu-card h2 { color: #ff4d6d; margin: 0; font-size: 1.3rem; }
+
+        /* Letter Box */
+        .letter-box { background: white; padding: 30px; border-radius: 15px; max-width: 400px; line-height: 1.6; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
+
+        /* Quiz */
+        .quiz-box { background: white; padding: 25px; border-radius: 20px; width: 100%; max-width: 400px; }
+        .option-btn {
+            display: block; width: 100%; margin: 10px 0; padding: 15px;
+            border: 2px solid #ffb4c2; border-radius: 12px; background: white; 
+            font-size: 1rem; cursor: pointer; font-weight: bold;
+        }
+
+        /* Buttons & No Button */
+        #yesBtn { background-color: #ff4d6d; color: white; padding: 15px 45px; border: none; border-radius: 50px; font-size: 1.3rem; font-weight: bold; cursor: pointer; }
+        #noBtn {
+            background-color: #6c757d; color: white; padding: 12px 30px; border: none; border-radius: 50px;
+            position: fixed; transition: 0.1s ease; z-index: 1000; font-weight: bold;
+            left: 50%; top: 70%; transform: translateX(-50%);
+        }
+        
+        .back-btn { position: absolute; top: 20px; left: 20px; background: #ffb4c2; border: none; padding: 8px 15px; border-radius: 20px; color: white; font-weight: bold; cursor: pointer; }
+        img { width: 160px; border-radius: 15px; margin-bottom: 10px; }
+    </style>
+</head>
+<body>
+
+    <div id="home" class="section active">
+        <h1 style="color: #ff4d6d;">Happy 3 Months of Knowing you! 💖</h1>
+        <div class="menu-card" onclick="showSection('letter')">
+            <h2>✉️ A Message For You</h2>
+        </div>
+        <div class="menu-card" onclick="showSection('quiz')">
+            <h2>🧠 Memory Quiz</h2>
+        </div>
+        <div class="menu-card" onclick="showSection('proposal')">
+            <h2>🌹 I Have A Request</h2>
+        </div>
+    </div>
+
+    <div id="letter" class="section">
+        <button class="back-btn" onclick="showSection('home')">← Back</button>
+        <div class="letter-box">
+            <h2 style="color: #ff4d6d;">My Dearest...</h2>
+            <p>I wanted to take a moment to tell you how much you mean to me. From our first message to every moment we spend together, you've made my life so much brighter. ❤️</p>
+        </div>
+    </div>
+
+    <div id="quiz" class="section">
+        <button class="back-btn" onclick="showSection('home')">← Back</button>
+        <div class="quiz-box">
+            <h2 id="q-text" style="color: #ff4d6d;">Question</h2>
+            <div id="q-options"></div>
+            <div id="q-feedback" style="font-size: 3rem; height: 50px;"></div>
+        </div>
+    </div>
+
+    <div id="proposal" class="section">
+        <button class="back-btn" onclick="showSection('home')">← Back</button>
+        <img src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExOHpueGZ3bmZqZzR3eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4JmVwPXYxX2ludGVybmFsX2dpZl9ieV9pZCZjdD1n/c76IJLufpN61i/giphy.gif">
+        <h1 style="color: #ff4d6d;">Would you be my Valentine? ❤️</h1>
+        <button id="yesBtn" onclick="celebrate()">YES</button>
+        <button id="noBtn" onmouseover="moveBtn()" ontouchstart="moveBtn()">NO</button>
+    </div>
+
+    <script>
+        // NAVIGATION LOGIC
+        function showSection(id) {
+            // Hide all sections
+            const sections = document.querySelectorAll('.section');
+            sections.forEach(s => s.classList.remove('active'));
+            
+            // Show the one we want
+            document.getElementById(id).classList.add('active');
+
+            // Specialized logic for No Button visibility
+            const noBtn = document.getElementById('noBtn');
+            if (id === 'proposal') {
+                noBtn.style.display = 'block';
+                noBtn.style.top = '70%'; // Reset position
+                noBtn.style.left = '50%';
+            } else {
+                noBtn.style.display = 'none';
+            }
+
+            if(id === 'quiz') { currentQ = 0; loadQ(); }
+        }
+
+        // QUIZ DATA
+        const quizData = [
+            { q: "When was the first message I sent you?", o: ["5 Oct", "10 Nov", "14 Nov"], a: "10 Nov" },
+            { q: "When did we first meet physically?", o: ["1 Jan", "16 Jan 2025", "20 Feb"], a: "16 Jan 2025" },
+            { q: "What is the exterior gate code?", o: ["2569", "1234", "9856"], a: "2569" }
+        ];
+        let currentQ = 0;
+
+        function loadQ() {
+            const data = quizData[currentQ];
+            document.getElementById('q-text').innerText = data.q;
+            const div = document.getElementById('q-options');
+            div.innerHTML = '';
+            data.o.forEach(opt => {
+                const b = document.createElement('button');
+                b.className = 'option-btn'; b.innerText = opt;
+                b.onclick = () => {
+                    const fb = document.getElementById('q-feedback');
+                    if(opt === data.a) {
+                        fb.innerText = "🥰";
+                        setTimeout(() => { 
+                            fb.innerText = ""; 
+                            currentQ++; 
+                            if(currentQ < quizData.length) loadQ(); 
+                            else {
+                                document.getElementById('quiz').innerHTML = "<h1>Quiz Master! ❤️</h1><p>You remember everything! Now go back and check the Request!</p><button class='option-btn' onclick='location.reload()'>Go Back</button>";
+                            }
+                        }, 800);
+                    } else { fb.innerText = "😡"; setTimeout(() => fb.innerText = "", 800); }
+                };
+                div.appendChild(b);
+            });
+        }
+
+        // NO BUTTON ESCAPE
+        function moveBtn() {
+            const b = document.getElementById('noBtn');
+            const padding = 50;
+            const x = Math.random() * (window.innerWidth - b.offsetWidth - padding) + (padding/2);
+            const y = Math.random() * (window.innerHeight - b.offsetHeight - padding) + (padding/2);
+            b.style.left = x + 'px';
+            b.style.top = y + 'px';
+        }
+
+        // YES BUTTON CELEBRATE
+        function celebrate() {
+            document.body.innerHTML = `
+                <div style="text-align:center; padding: 20px; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; background: #fff0f3;">
+                    <h1 style="color: #ff4d6d; font-size: 2.5rem;">YAY! See you on the 19th of Feb! 💖</h1>
+                    <img src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExOHpueGZ3bmZqZzR3eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4JmVwPXYxX2ludGVybmFsX2dpZl9ieV9pZCZjdD1n/KztT2c4u8mYYUiMKdJ/giphy.gif" style="width:280px;">
+                </div>
+            `;
+        }
+    </script>
+</body>
+</html>
