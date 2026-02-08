@@ -86,6 +86,7 @@ body {
     font-size: 1.3rem;
     font-weight: bold;
     cursor: pointer;
+    transition: transform 0.15s ease;
 }
 #noBtn {
     background: #6c757d;
@@ -157,8 +158,10 @@ body {
 <div id="letter" class="section">
     <button class="back-btn" onclick="showSection('home')">← Back</button>
     <div class="letter-box">
-        <h2 style="color:#ff4d6d;">My Dearest...</h2>
-        <p>You’ve made my days brighter and my heart warmer ❤️</p>
+        <h2 style="color:#ff4d6d;">Habibti...</h2>
+        <p>Mili 3raftek ye rou7i 7yeti wallet ma7leha...rabi yfathlek laya...❤️</p>
+		<p>Love you..n7ebek w nmout 3lik 💖</p>
+		<p>My cutie wife 😘</p>
     </div>
 </div>
 
@@ -184,6 +187,7 @@ body {
 // Element refs
 const countdown = document.getElementById("countdown");
 const noBtn = document.getElementById("noBtn");
+const yesBtn = document.getElementById("yesBtn");
 const qText = document.getElementById("qText");
 const qOptions = document.getElementById("qOptions");
 const qFeedback = document.getElementById("qFeedback");
@@ -196,9 +200,9 @@ function showSection(id) {
     if (id === "quiz") { currentQ = 0; loadQ(); }
 }
 
-// Countdown
+// Countdown — show immediately
 const targetDate = new Date("2026-02-20T00:00:00");
-setInterval(() => {
+function updateCountdown() {
     const diff = targetDate - new Date();
     if (diff <= 0) {
         countdown.innerHTML = "💖 It’s the day! 💖";
@@ -209,25 +213,15 @@ setInterval(() => {
     const m = Math.floor(diff / 60000) % 60;
     const s = Math.floor(diff / 1000) % 60;
     countdown.innerHTML = `⏳ Countdown to 20 Feb 2026<br>${d} days • ${h}h • ${m}m • ${s}s`;
-}, 1000);
+}
+updateCountdown();
+setInterval(updateCountdown, 1000);
 
 // Quiz
 const quiz = [
-    {
-        q: "When was the first message I sent you?",
-        o: ["5 Oct", "10 Nov", "14 Nov"],
-        a: "10 Nov"
-    },
-    {
-        q: "When did we first meet physically?",
-        o: ["1 Jan", "16 Jan 2025", "20 Feb"],
-        a: "16 Jan 2025"
-    },
-    {
-        q: "What is the exterior gate code?",
-        o: ["2569", "1234", "9856"],
-        a: "2569"
-    }
+    { q: "When was the first message I sent you?", o: ["5 Oct","10 Nov","14 Nov"], a: "10 Nov" },
+    { q: "When did we first meet physically?", o: ["1 Jan","16 Jan 2025","20 Feb"], a: "16 Jan 2025" },
+    { q: "What is the exterior gate code?", o: ["2569","1234","9856"], a: "2569" }
 ];
 let currentQ = 0;
 
@@ -243,50 +237,65 @@ function loadQ() {
 
         btn.onclick = () => {
             if (opt === data.a) {
-                qFeedback.textContent = "🥰";
+                qFeedback.textContent = "7abibti rak 🥰";
                 setTimeout(() => {
                     qFeedback.textContent = "";
                     currentQ++;
-                    if (currentQ < quiz.length) {
-                        loadQ();
-                    } else {
+                    if (currentQ < quiz.length) loadQ();
+                    else {
                         document.getElementById("quiz").innerHTML = `
                             <button class="back-btn" onclick="showSection('home')">← Back</button>
-                            <h1 style="color:#ff4d6d;">Quiz Master! ❤️</h1>
-                            <p>You remembered everything 🥹</p>
+                            <h1 style="color:#ff4d6d;">Bravo ye rou7i titthaker kolchay! ❤️</h1>
+                            <p>arja3 lil page d'acceuil ye 3zizti 🥹</p>
                         `;
                     }
                 }, 700);
             } else {
-                qFeedback.textContent = "😡";
+                qFeedback.textContent = "hakka tansa ye rou7i 😡";
                 setTimeout(() => qFeedback.textContent = "", 700);
             }
         };
-
         qOptions.appendChild(btn);
     });
 }
 
-// No button escape
+// NO escape + YES grows FAST
+let yesScale = 1;
 function moveBtn() {
     noBtn.style.left = Math.random() * 80 + "%";
     noBtn.style.top = Math.random() * 80 + "%";
+
+    yesScale += 0.25; // faster growth
+    yesBtn.style.transform = `scale(${yesScale})`;
 }
 
-// Confetti
+// YES page with cats + back
 function celebrate() {
-    for (let i = 0; i < 120; i++) {
-        const c = document.createElement("div");
-        c.className = "confetti";
-        c.style.left = Math.random() * 100 + "vw";
-        c.style.background = `hsl(${Math.random() * 360},100%,60%)`;
-        document.body.appendChild(c);
-        setTimeout(() => c.remove(), 1500);
-    }
-    alert("YAYYYY 💖");
+    document.body.innerHTML = `
+        <div style="
+            height:100vh;
+            background:#fff0f3;
+            display:flex;
+            flex-direction:column;
+            align-items:center;
+            justify-content:center;
+            text-align:center;
+            padding:20px;
+        ">
+            <button class="back-btn" onclick="location.reload()">← Back</button>
+            <h1 style="color:#ff4d6d; font-size:2.4rem;">
+                Love ye rou7i n7777ebeeekkkkk w nmout 3liik 💖
+            </h1>
+            <img
+                src="https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExbmVoNnZ3M21pZ2xlZjl5b2s2eXdpeXdtd3g0b25ubGY2eDJ6eDBocyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/byLGLI5h3jwRaqd2qU/giphy.gif"
+                alt="Two cats hugging"
+                style="width:300px; margin-top:20px;"
+            >
+        </div>
+    `;
 }
 
-// Hearts on mouse move
+// Hearts
 document.addEventListener("mousemove", e => {
     const heart = document.createElement("div");
     heart.className = "heart";
